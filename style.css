@@ -68,7 +68,8 @@ body {
 
 .header {
     display: flex;
-    justify-content: space-between;
+    /*justify-content: space-between;*/
+    gap: 10%;
     align-items: center;
 }
 
@@ -225,7 +226,7 @@ body {
     justify-content: space-between;
     padding: 10px;
     border-radius: 5px;
-    width: 280px;
+    width: 380px;
     transition: transform 0.3s ease-in-out;
     cursor: pointer;
     margin-bottom: 10px;
@@ -233,6 +234,10 @@ body {
 
 .card:hover {
     transform: translateX(5px);
+}
+
+.card-container:hover .card-dot{
+    background-color: var(--color-blue);
 }
 
 .card-title {
