@@ -8,30 +8,93 @@
     font-family: "Helvetica", "Arial", sans-serif;
 }
 
+/* Dark theme (default) */
 :root {
-    --background-color: #ffffff;
-    --text-color: #1a1a1a;
-    --accent-color: #0d6efd;
-    --border-color: #d1d5db;
-    --hover-border-color: #a1a5ab;
-    --color-blue: #3b82f6;
-    --footer-color: #f8f9fa;
-    --footer-color-text: #6c757d;
-    --linear-gradient: linear-gradient(to bottom, transparent, #3b82f6, #3b82f6, transparent);
+    --background-color: #000000;
+    --text-color: #e5e5e5;
+    --text-secondary: #b3b3b3;
+    --heading-color: #ffffff;
+    --accent-color: #60a5fa;
+    --border-color: #333333;
+    --hover-border-color: #4a4a4a;
+    --color-blue: #60a5fa;
+    --color-opposite-bg: #ffffff;
+    --card-bg: #1a1a1a;
+    --footer-color: #0a0a0a;
+    --footer-color-text: #b3b3b3;
+    --linear-gradient: linear-gradient(to bottom, transparent, #60a5fa, #60a5fa, transparent);
 }
 
-.light-color {
-    --background-color: #1a1a1a;
-    --text-color: #494e52;
-    --accent-color: #52adc8;
-    --color-opposite-bg: #ffffff;
-    --footer-color: #F2F3F3;
-    --footer-color-text: #9ba1a6;
+/* Light theme */
+.light-theme {
+    --background-color: #ffffff;
+    --text-color: #2d2d2d;
+    --text-secondary: #666666;
+    --heading-color: #000000;
+    --accent-color: #2563eb;
+    --border-color: #d1d1d1;
+    --hover-border-color: #999999;
+    --color-blue: #3b82f6;
+    --color-opposite-bg: #000000;
+    --card-bg: #f8f8f8;
+    --footer-color: #f5f5f5;
+    --footer-color-text: #666666;
     --linear-gradient: linear-gradient(to bottom, transparent, #3b82f6, #3b82f6, transparent);
 }
 
 body {
     background-color: var(--background-color);
+    color: var(--text-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    min-height: 100vh;
+}
+
+.layout {
+    background-color: var(--background-color);
+    transition: background-color 0.3s ease;
+    min-height: 100vh;
+}
+
+/* Add transitions to elements that change with theme */
+.text, .heading, .headingSimple, .card-title, .card-desc,
+.sidebar-title, .sidebar-position, .header-logo, .nav-link,
+.card, .sidebar-link-item {
+    transition: color 0.3s ease, border-color 0.3s ease, background-color 0.3s ease;
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: var(--card-bg);
+    border: 2px solid var(--border-color);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: var(--accent-color);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.theme-toggle:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    border-color: var(--accent-color);
+}
+
+.light-theme .theme-toggle {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.light-theme .theme-toggle:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
 }
 
 /* ===============================
@@ -74,7 +137,7 @@ body {
 }
 
 .header-logo {
-    color: var(--text-color);
+    color: var(--heading-color);
     font-weight: bold;
     font-size: 20px;
     cursor: pointer;
@@ -99,13 +162,17 @@ body {
     bottom: -3px;
     width: 100%;
     height: 2px;
-    background: var(--hover-border-color);
+    background: var(--accent-color);
     transform: scaleX(0);
     transition: transform 0.3s ease-in-out;
 }
 
 .nav-link:hover::after {
     transform: scaleX(1);
+}
+
+.nav-link:hover {
+    color: var(--accent-color);
 }
 
 /* ===============================
@@ -131,13 +198,14 @@ body {
 }
 
 .sidebar-title {
-    color: var(--text-color);
+    color: var(--heading-color);
     font-weight: bold;
     margin-top: 10px;
+    font-size: 18px;
 }
 
 .sidebar-position {
-    color: var(--text-color);
+    color: var(--text-secondary);
     font-size: 14px;
 }
 
@@ -153,10 +221,15 @@ body {
     color: var(--text-color);
     cursor: pointer;
     transition: color 0.3s;
+    text-decoration: none;
 }
 
 .sidebar-link-item:hover {
     color: var(--accent-color);
+}
+
+.sidebar-link-item p {
+    margin: 0;
 }
 
 /* ===============================
@@ -174,14 +247,14 @@ body {
 }
 
 .heading {
-    color: var(--text-color);
+    color: var(--heading-color);
     margin-bottom: 10px;
     font-size: 26px;
     font-weight: 700;
 }
 
 .headingSimple {
-    color: var(--text-color);
+    color: var(--heading-color);
     margin-bottom: 10px;
     font-size: 18px;
     font-weight: 700;
@@ -222,18 +295,26 @@ body {
 
 .card {
     border: 1px solid var(--border-color);
+    background-color: var(--card-bg);
     display: flex;
     justify-content: space-between;
-    padding: 10px;
-    border-radius: 5px;
-    width: 380px;
-    transition: transform 0.3s ease-in-out;
+    align-items: flex-start;
+    padding: 15px;
+    border-radius: 8px;
+    width: 550px;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out, border-color 0.3s ease;
     cursor: pointer;
     margin-bottom: 10px;
 }
 
 .card:hover {
     transform: translateX(5px);
+    border-color: var(--accent-color);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.light-theme .card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .card-container:hover .card-dot{
@@ -242,6 +323,9 @@ body {
 
 .card-title {
     font-weight: 600;
+    color: var(--heading-color);
+    font-size: 15px;
+    margin-bottom: 5px;
 }
 
 .card-icon {
@@ -256,12 +340,29 @@ body {
 
 .card-desc {
     font-size: 13px;
+    color: var(--text-secondary);
 }
 
 .card-timeline {
     font-size: 12px;
     color: var(--color-blue);
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-left: 10px;
 }
+
+.card > div {
+    flex: 1;
+    min-width: 0;
+}
+
+.card .text {
+    font-size: 13px;
+    line-height: 1.5;
+    font-weight: normal;
+    color: var(--text-secondary);
+}
+
 
 /* ===============================
    Footer
@@ -323,6 +424,13 @@ body {
     }
 }
 
+@media (max-width: 768px) {
+    .card {
+        width: 100%;
+        max-width: 550px;
+    }
+}
+
 @media (max-width: 600px) {
     .header {
         flex-direction: column;
@@ -334,5 +442,18 @@ body {
     }
     .card {
         width: 100%;
+        flex-direction: column;
+        gap: 8px;
+    }
+    .card-timeline {
+        margin-left: 0;
+        align-self: flex-start;
+    }
+    .theme-toggle {
+        bottom: 20px;
+        right: 20px;
+        width: 45px;
+        height: 45px;
+        font-size: 18px;
     }
 }
