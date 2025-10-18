@@ -359,7 +359,7 @@ body {
 .card .text {
     font-size: 13px;
     line-height: 1.5;
-    font-weight: normal;
+    font-weight: bold;
     color: var(--text-secondary);
 }
 
@@ -370,8 +370,10 @@ body {
 .footer {
     margin-top: 3rem;
     color: var(--footer-color-text);
-    padding: 3rem 2rem;
+    padding: 2rem 1rem;
     background: var(--footer-color);
+    text-align: center;
+    border-top: 1px solid var(--border-color);
 }
 
 .footer-title {
@@ -382,12 +384,16 @@ body {
 .social-tab-link {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 10px;
+    flex-wrap: wrap;
 }
 
 .social-links-tab {
     display: flex;
     gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 .social-link {
@@ -396,6 +402,7 @@ body {
     gap: 5px;
     cursor: pointer;
     color: var(--footer-color-text);
+    transition: color 0.3s ease;
 }
 
 .social-link:hover {
@@ -404,7 +411,8 @@ body {
 
 .footer-copy {
     font-size: 12px;
-    margin-top: 20px;
+    margin-top: 15px;
+    color: var(--text-secondary);
 }
 
 /* ===============================
@@ -455,5 +463,12 @@ body {
         width: 45px;
         height: 45px;
         font-size: 18px;
+    }
+    .footer {
+        padding: 1.5rem 1rem;
+    }
+    .footer-copy {
+        font-size: 11px;
+        line-height: 1.5;
     }
 }
