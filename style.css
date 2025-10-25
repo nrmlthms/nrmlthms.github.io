@@ -53,6 +53,12 @@ body {
     background-color: var(--background-color);
     transition: background-color 0.3s ease;
     min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.layout main {
+    flex: 1;
 }
 
 /* Add transitions to elements that change with theme */
