@@ -275,14 +275,14 @@ body {
     gap: 20px;
 }
 
-.card-container:not(:last-child)::after {
+.card-container::after {
     content: '';
     position: absolute;
     left: 5px;
     top: 12px;
     width: 2px;
-    height: calc(100% + 20px);
-    background: var(--linear-gradient);
+    height: calc(100% - 12px);
+    background: var(--color-blue);
 }
 
 .card-dot {
@@ -363,6 +363,20 @@ body {
     color: var(--text-secondary);
 }
 
+
+/* ===============================
+   Achievements
+================================= */
+.achievement-item {
+    margin-bottom: 20px;
+}
+
+.achievement-separator {
+    width: 95%;
+    height: 2px;
+    background-color: var(--accent-color);
+    margin: 20px 0;
+}
 
 /* ===============================
    Footer
