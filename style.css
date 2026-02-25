@@ -142,6 +142,11 @@ body {
     align-items: center;
 }
 
+.header-logo-link {
+    text-decoration: none;
+    color: inherit;
+}
+
 .header-logo {
     color: var(--heading-color);
     font-weight: bold;
