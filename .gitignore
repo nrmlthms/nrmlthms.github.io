@@ -62,3 +62,5 @@ coverage/
 # Next.js:
 .next/
 out/
+
+archive/
