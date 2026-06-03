@@ -498,6 +498,18 @@ body {
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
 }
 
+/* Featured horizontal project card (spans full grid width) */
+.project-card.featured {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    align-items: stretch;
+}
+
+.project-card.featured .featured-image {
+    flex: 0 0 34%;
+    height: auto;
+}
+
 .light-theme .project-card:hover {
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
@@ -579,6 +591,15 @@ body {
     .projects-grid {
         grid-template-columns: 1fr;
         gap: 20px;
+    }
+
+    .project-card.featured {
+        flex-direction: column;
+    }
+
+    .project-card.featured .featured-image {
+        flex: none;
+        height: 200px;
     }
 }
 
