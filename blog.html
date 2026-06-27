@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog - Nirmal Thomas</title>
+    <meta name="description" content="Writing on AI engineering, NLP research, and building real systems. Research stories, technical deep dives, and lessons from the field.">
+    <link rel="icon" type="image/png" href="./public/favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+<div class="layout">
+    <!-- HEADER -->
+    <header class="header_div">
+        <div class="container header">
+            <a href="./index.html" class="header-logo-link"><h1 class="header-logo">Nirmal Thomas</h1></a>
+            <nav class="nav-links-tab">
+                <a href="./publications.html" class="nav-link">Publications</a>
+                <a href="./projects.html" class="nav-link">Projects</a>
+                <a href="./blog.html" class="nav-link">Blog</a>
+                <a href="./cv.html" class="nav-link" target="_blank">CV</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container content">
+        <section class="content-full">
+            <h1 class="heading">Blog</h1>
+            <p class="text">Research stories, technical deep dives, and lessons from building AI systems.</p>
+
+            <br><br>
+
+            <!-- Blog Post List -->
+            <div class="blog-list">
+
+                <a href="./blog/can-cheap-ai-models-predict-expensive-ones-fail.html" class="blog-list-card">
+                    <div class="blog-list-card-body">
+                        <p class="blog-list-date">June 27, 2026</p>
+                        <h2 class="blog-list-title">Can Cheap AI Models Predict Where Expensive Ones Fail?</h2>
+                        <p class="blog-list-excerpt">Using four tiny open-source models to predict when frontier AI models like Claude Haiku fail — and the methodological trap that made a null result look like a real signal.</p>
+                        <div class="publication-tags" style="margin-top: 12px;">
+                            <span class="tag">LLM Evaluation</span>
+                            <span class="tag">AI Research</span>
+                            <span class="tag">MMLU</span>
+                            <span class="tag">IRT</span>
+                        </div>
+                    </div>
+                    <div class="blog-list-card-arrow">
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </div>
+                </a>
+
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <p class="footer-copy">© 2025 Nirmal Thomas. Powered by Jekyll &amp; AcademicPages, a fork of Minimal Mistakes.</p>
+    </footer>
+
+    <!-- Theme Toggle Button -->
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <i class="fas fa-sun"></i>
+    </button>
+</div>
+
+<script>
+    const themeToggle = document.getElementById('themeToggle');
+    const layout = document.querySelector('.layout');
+    const icon = themeToggle.querySelector('i');
+
+    const currentTheme = localStorage.getItem('theme') || 'dark';
+    if (currentTheme === 'light') {
+        layout.classList.add('light-theme');
+        icon.classList.remove('fa-sun');
+        icon.classList.add('fa-moon');
+    }
+
+    themeToggle.addEventListener('click', () => {
+        layout.classList.toggle('light-theme');
+        if (layout.classList.contains('light-theme')) {
+            icon.classList.remove('fa-sun');
+            icon.classList.add('fa-moon');
+            localStorage.setItem('theme', 'light');
+        } else {
+            icon.classList.remove('fa-moon');
+            icon.classList.add('fa-sun');
+            localStorage.setItem('theme', 'dark');
+        }
+    });
+</script>
+</body>
+</html>

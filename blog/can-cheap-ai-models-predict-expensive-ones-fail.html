@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- SEO: Primary meta tags -->
+    <title>Can Cheap AI Models Predict Where Expensive Ones Fail? | Nirmal Thomas</title>
+    <meta name="description" content="A research story: using four tiny open-source models to predict when Claude Haiku fails on MMLU and ARC-Challenge. What the panel disagreement signal was, why it disappeared after fixing a shared-data flaw, and what it takes for this approach to actually work.">
+    <meta name="keywords" content="LLM failure prediction, frontier model failure, cheap AI models, open-source model ensemble, MMLU benchmark, ARC-Challenge, item response theory, IRT, minority ratio, panel disagreement, Claude Haiku, AI evaluation, model difficulty">
+    <meta name="author" content="Nirmal Thomas">
+    <link rel="canonical" href="https://nrmlthms.github.io/blog/can-cheap-ai-models-predict-expensive-ones-fail.html">
+
+    <!-- Open Graph (LinkedIn, Slack, etc.) -->
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Can Cheap AI Models Predict Where Expensive Ones Fail?">
+    <meta property="og:description" content="Using four tiny open-source models to predict when frontier AI models like Claude Haiku fail — and the methodological trap that made a null result look like a signal.">
+    <meta property="og:url" content="https://nrmlthms.github.io/blog/can-cheap-ai-models-predict-expensive-ones-fail.html">
+    <meta property="og:site_name" content="Nirmal Thomas">
+    <meta property="article:published_time" content="2026-06-27">
+    <meta property="article:author" content="Nirmal Thomas">
+    <meta property="article:tag" content="LLM Evaluation">
+    <meta property="article:tag" content="AI Research">
+    <meta property="article:tag" content="MMLU">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@1Nirmal3">
+    <meta name="twitter:creator" content="@1Nirmal3">
+    <meta name="twitter:title" content="Can Cheap AI Models Predict Where Expensive Ones Fail?">
+    <meta name="twitter:description" content="Using four tiny open-source models to predict when frontier AI models like Claude Haiku fail — and the methodological trap that made a null result look like a signal.">
+
+    <!-- Structured Data: BlogPosting -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "Can Cheap AI Models Predict Where Expensive Ones Fail?",
+      "description": "A research story about using small open-source models to predict failures of frontier AI models. What we tried on MMLU and ARC-Challenge, what broke, and the methodological lessons.",
+      "author": {
+        "@type": "Person",
+        "name": "Nirmal Thomas",
+        "url": "https://nrmlthms.github.io"
+      },
+      "datePublished": "2026-06-27",
+      "keywords": ["LLM failure prediction", "AI evaluation", "item response theory", "MMLU", "frontier models", "open-source models", "minority ratio"],
+      "publisher": {
+        "@type": "Person",
+        "name": "Nirmal Thomas"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://nrmlthms.github.io/blog/can-cheap-ai-models-predict-expensive-ones-fail.html"
+      }
+    }
+    </script>
+
+    <link rel="icon" type="image/png" href="../public/favicon.png">
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+<div class="layout">
+    <!-- HEADER -->
+    <header class="header_div">
+        <div class="container header">
+            <a href="../index.html" class="header-logo-link"><h1 class="header-logo">Nirmal Thomas</h1></a>
+            <nav class="nav-links-tab">
+                <a href="../publications.html" class="nav-link">Publications</a>
+                <a href="../projects.html" class="nav-link">Projects</a>
+                <a href="../blog.html" class="nav-link">Blog</a>
+                <a href="../cv.html" class="nav-link" target="_blank">CV</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container content">
+        <article class="content-full blog-article">
+
+            <!-- Breadcrumb -->
+            <nav class="blog-breadcrumb" aria-label="breadcrumb">
+                <a href="../blog.html">Blog</a>
+                <span class="blog-breadcrumb-sep">/</span>
+                <span>Can Cheap AI Models Predict Where Expensive Ones Fail?</span>
+            </nav>
+
+            <!-- Article Header -->
+            <header class="blog-post-header">
+                <h1 class="blog-post-title">Can Cheap AI Models Predict Where Expensive Ones Fail?</h1>
+                <p class="blog-post-subtitle">A research story: what we tried, what broke, what we learned.</p>
+                <div class="blog-post-meta">
+                    <span><i class="fa-regular fa-calendar"></i> June 27, 2026</span>
+                    <span><i class="fa-regular fa-clock"></i> 8 min read</span>
+                </div>
+                <div class="publication-tags" style="margin-top: 16px;">
+                    <span class="tag">LLM Evaluation</span>
+                    <span class="tag">AI Research</span>
+                    <span class="tag">MMLU</span>
+                    <span class="tag">IRT</span>
+                    <span class="tag">Frontier Models</span>
+                </div>
+            </header>
+
+            <hr class="blog-divider">
+
+            <!-- Article Body -->
+            <div class="blog-post-body">
+
+                <h2>The Idea</h2>
+                <p>Powerful AI models like Claude and GPT are expensive. Every API call costs money, and nobody knows in advance which questions they'll get wrong.</p>
+                <p>But what if you could <em>predict</em> which questions a frontier model will fail on — before you even ask it? And what if you could do that using a handful of tiny, free, open-source models you run yourself?</p>
+                <p>That's the question we set out to answer.</p>
+                <p>The intuition: when small models disagree about an answer, that disagreement might be a signal that the item is genuinely hard — hard enough that even a much more capable model might stumble. Think of it like asking five junior colleagues a question. If they all confidently give the same answer, it's probably easy. If they split 3-2, the question might be tricky even for an expert.</p>
+                <p>We wanted to know: is that signal real? And can it predict failure on closed models we can't inspect — models where we don't have access to internal states, only to inputs and outputs?</p>
+
+                <hr class="blog-divider">
+
+                <h2>Why This Matters</h2>
+                <p>There's a whole class of existing methods that predict model failure by looking <em>inside</em> the model — at its hidden states and internal representations. These work really well. But they have a fatal limitation: they only work on open models where you can access the internals. For closed API models like Claude, GPT, or Gemini, you get the answer and nothing else.</p>
+                <p>Our approach works from the outside only. No internals needed. That's a real structural advantage — if the signal exists.</p>
+
+                <hr class="blog-divider">
+
+                <h2>Step 1: Build a Controlled Test</h2>
+                <p>Before running any real experiments, we needed a way to verify that our pipeline could even detect a signal when one exists. So we started with <strong>synthetic data</strong> — fake benchmark responses where we <em>knew</em> the ground truth.</p>
+                <p>We generated responses for a fake set of panel models and a fake frontier model. Crucially, we injected a known signal: certain items were made harder for the frontier, and the panel showed more disagreement on exactly those items. Then we ran our experiment and asked: can we detect the signal we just planted?</p>
+                <p>This is called a <strong>sanity check</strong>, and it's the first thing any well-designed experiment needs. If your method can't detect a signal you deliberately put there, it can't detect anything in the real world either.</p>
+                <p><strong>Result: it worked.</strong> We could detect the planted signal. We also confirmed that with <em>no</em> injected signal, the test correctly returned "nothing to see here." The pipeline was working correctly.</p>
+                <p>We established a <strong>calibration floor</strong>: in the null condition (no signal), our test produced a score around 0.012. Any real-data result would need to be well above that to be meaningful.</p>
+
+                <hr class="blog-divider">
+
+                <h2>Step 2: Run on Real Data</h2>
+                <p>We chose <strong>MMLU</strong> as our benchmark — a 14,042-question multiple-choice test covering everything from history to medicine to computer science. Our frontier model: Claude Haiku 4.5, accessed only through the API.</p>
+                <p>Our panel: four small open-source models (SmolLM2-1.7B, Qwen2.5-0.5B, phi-1.5, gemma-2-2b) that we ran ourselves on a GPU. These models are orders of magnitude cheaper and weaker than Claude — that's the point.</p>
+                <p>We ran all four panel models on every MMLU question. Then we sent all 14,042 questions to Claude Haiku via the Batches API (at 50% discount, total cost: $2.10).</p>
+                <p>Our key signal: <strong>minority_ratio</strong> — for each question, what fraction of the panel voted against the majority answer? If 3 models say "A" and 1 says "B", minority_ratio is 0.25.</p>
+                <p><strong>First result: a mess.</strong></p>
+                <p>When we ran the experiment naively — with our three signals (entropy, minority_ratio, and mean_correct) all included together — we got a negative R². That means the model fit was <em>worse</em> than just predicting the average answer for every question.</p>
+                <p><strong>What went wrong?</strong></p>
+                <p>We had three signals, but they were all saying the same thing in different mathematical languages. <code>mean_correct</code> (average panel accuracy per question) was nearly identical to the IRT difficulty parameter we were controlling for. <code>entropy</code> and <code>minority_ratio</code> were both monotone functions of the same number. When you put near-identical predictors into a regression together, the math breaks down — the coefficients blow up and cancel each other out, producing nonsense.</p>
+                <p><strong>Ablation 1: drop the redundant signals.</strong></p>
+                <p>We removed <code>mean_correct</code> entirely — the code even had a comment warning us it would be collinear, which we had ignored. Then we tested <code>entropy</code> and <code>minority_ratio</code> together, and still got OLS breakdown (r ≈ 0.99 between them for binary data). So we reduced to a single signal: <code>minority_ratio</code> only. It's the most interpretable anyway — "what fraction of the panel disagreed with the majority."</p>
+
+                <hr class="blog-divider">
+
+                <h2>Step 3: The Apparent Signal — and the Trap</h2>
+                <p>With one clean signal, we ran again. The result looked good: ΔR² = 0.053, p &lt; 0.001, well above our calibration floor. The test said <strong>PURSUE</strong>.</p>
+                <p>We were excited. Then a colleague asked a simple question: <em>where did your IRT come from?</em></p>
+                <p>IRT (Item Response Theory) is a method borrowed from education testing. It takes many models' responses to the same questions and estimates a per-question "difficulty" score. We were using it as our baseline — the idea being that panel disagreement adds signal <em>beyond</em> what question difficulty already explains.</p>
+                <p>But here's the trap: <strong>both our IRT estimates and our panel signals came from the same five models.</strong> We were asking "does minority_ratio add information beyond IRT?" and both minority_ratio and IRT were computed from the same responses. It's like asking a student to grade their own exam and then checking if their self-assessment adds information beyond their own self-assessment. Of course it does — in a circular way.</p>
+                <p>This is a subtle methodological flaw that can make a null result look positive.</p>
+                <p><strong>Ablation 2: use an independent IRT baseline.</strong></p>
+                <p>The fix was clear: IRT needs to come from a completely separate set of models — ones that are neither in our panel nor the frontier we're predicting.</p>
+                <p>We ran six larger, more diverse open models (ranging from OLMo-1B at 36% accuracy to Qwen2.5-14B at 79% accuracy) on the same MMLU questions. We fitted IRT on those. Now our difficulty baseline came from independent data.</p>
+                <p><strong>Result with independent IRT: ΔR² = 0.0000, p = 0.50. KILL.</strong></p>
+                <p>The signal was gone. Completely. The panel's minority_ratio added nothing beyond what the leaderboard IRT had already captured.</p>
+
+                <hr class="blog-divider">
+
+                <h2>Step 4: Try a Different Benchmark</h2>
+                <p>Maybe MMLU was the problem. Claude Haiku gets 83% on MMLU — that means only 17% of questions are failures. Predicting rare events is inherently harder, and maybe we just needed more failures to work with.</p>
+                <p>We switched to <strong>ARC-Challenge</strong>, a reasoning benchmark designed to be harder for AI models.</p>
+                <p><strong>Claude Haiku accuracy on ARC-Challenge: 95.3%.</strong> Only 55 failures out of 1,172 questions.</p>
+                <p>That's <em>worse</em>. Haiku is basically perfect at ARC-Challenge.</p>
+                <p><strong>Result: KILL.</strong></p>
+                <p>The R² baseline was -20.3 — wildly negative, meaning the IRT estimates weren't predicting Haiku's failures at all. The IRT was calibrated for a range of models getting 37–94% accuracy. Haiku's failures happen in a tiny extreme tail that the difficulty estimates can't see.</p>
+
+                <hr class="blog-divider">
+
+                <h2>What We Learned</h2>
+                <p><strong>1. The shared-data trap is real and easy to miss.</strong> Any experiment that uses the same models to build the IRT baseline and the panel signals will inflate the apparent signal. This isn't obvious in advance. We only caught it by asking where each piece of data came from.</p>
+                <p><strong>2. Modern frontier models are too capable for standard benchmarks.</strong> Claude Haiku 4.5 gets 83–95% on MMLU and ARC-Challenge. You can't predict failures when there aren't enough failures to learn from. This isn't a flaw in the method — it's a floor effect in the benchmarks.</p>
+                <p><strong>3. Synthetic validation isn't enough.</strong> Our synthetic test confirmed the pipeline worked. But real data has structure that synthetic data doesn't: frontier models clustered near the top of the difficulty range, signal absorption by IRT, benchmark ceiling effects. The sanity check passed; the real test failed.</p>
+
+                <hr class="blog-divider">
+
+                <h2>What Would Need to Be True</h2>
+                <p>For this experiment to work, you'd need:</p>
+                <ul class="blog-post-list">
+                    <li>A benchmark where the frontier model fails <strong>30–50%</strong> of items (so failures are common enough to predict)</li>
+                    <li>An IRT baseline from genuinely independent models — not the panel, not the frontier</li>
+                    <li>A panel with enough diversity that minority_ratio actually varies meaningfully</li>
+                </ul>
+                <p>MMLU-Pro (a harder 10-choice variant of MMLU, where frontier models score ~50–60%) might hit that window. GPQA-Diamond (graduate-level science) might too, though it's gated.</p>
+                <p>We haven't run those yet. Whether the signal exists in that regime is still an open question.</p>
+
+                <hr class="blog-divider">
+
+                <h2>The Takeaway</h2>
+                <p>We started with a clean idea, built a careful pipeline, and ran the experiment honestly. The signal we thought we found turned out to be an artifact of a shared data source. When we fixed that, the signal disappeared.</p>
+                <p>That's not a failure — that's how research is supposed to work.</p>
+                <p>The methodological lesson (don't estimate your baseline and your test signal from the same data) is one that applies far beyond this specific experiment. And the infrastructure we built — running a panel of small models, getting frontier correctness cheaply via the Batches API, fitting IRT from diverse model responses, running a proper permutation test — is reusable for anyone who wants to test this on harder benchmarks.</p>
+                <p>The question isn't answered. It's just more precisely framed.</p>
+
+                <hr class="blog-divider">
+
+                <p class="blog-post-footnote"><em>Code and experiment details: <a href="https://github.com/nrmlthms/difficulty-transfer" target="_blank">github.com/nrmlthms/difficulty-transfer</a>. Total cost to run everything: ~$12 in API calls and ~6 GPU-hours on a T4.</em></p>
+
+            </div>
+            <!-- /blog-post-body -->
+
+        </article>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <p class="footer-copy">© 2025 Nirmal Thomas. Powered by Jekyll &amp; AcademicPages, a fork of Minimal Mistakes.</p>
+    </footer>
+
+    <!-- Theme Toggle Button -->
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <i class="fas fa-sun"></i>
+    </button>
+</div>
+
+<script>
+    const themeToggle = document.getElementById('themeToggle');
+    const layout = document.querySelector('.layout');
+    const icon = themeToggle.querySelector('i');
+
+    const currentTheme = localStorage.getItem('theme') || 'dark';
+    if (currentTheme === 'light') {
+        layout.classList.add('light-theme');
+        icon.classList.remove('fa-sun');
+        icon.classList.add('fa-moon');
+    }
+
+    themeToggle.addEventListener('click', () => {
+        layout.classList.toggle('light-theme');
+        if (layout.classList.contains('light-theme')) {
+            icon.classList.remove('fa-sun');
+            icon.classList.add('fa-moon');
+            localStorage.setItem('theme', 'light');
+        } else {
+            icon.classList.remove('fa-moon');
+            icon.classList.add('fa-sun');
+            localStorage.setItem('theme', 'dark');
+        }
+    });
+</script>
+</body>
+</html>
