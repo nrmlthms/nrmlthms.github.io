@@ -630,8 +630,7 @@ body {
 
 .blog-card {
     position: relative;
-    display: flex;
-    flex-direction: column;
+    padding-bottom: 50px;
 }
 
 .blog-card-link {
@@ -642,16 +641,14 @@ body {
 }
 
 .blog-read-more-wrapper {
-    margin-top: auto;
-    padding-top: 16px;
-    display: flex;
-    justify-content: flex-end;
-    position: relative;
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
     z-index: 2;
 }
 
 .blog-read-more {
-    color: var(--color-blue);
+    color: #60a5fa;
     font-size: 14px;
     font-weight: 500;
     display: inline-flex;
@@ -662,6 +659,10 @@ body {
 
 .blog-card:hover .blog-read-more {
     gap: 10px;
+}
+
+.light-theme .blog-read-more {
+    color: #2563eb;
 }
 
 /* Blog post page */
