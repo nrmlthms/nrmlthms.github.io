@@ -628,24 +628,35 @@ body {
     gap: 0;
 }
 
+.blog-card {
+    position: relative;
+}
+
+.blog-card-link {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: 8px;
+}
+
 .blog-read-more-wrapper {
     margin-top: 16px;
+    position: relative;
+    z-index: 2;
 }
 
 .blog-read-more {
     color: var(--accent-color);
-    text-decoration: none;
     font-size: 14px;
     font-weight: 500;
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    transition: gap 0.2s ease, color 0.2s ease;
+    transition: gap 0.2s ease;
 }
 
-.blog-read-more:hover {
+.blog-card:hover .blog-read-more {
     gap: 10px;
-    color: var(--color-blue);
 }
 
 /* Blog post page */
