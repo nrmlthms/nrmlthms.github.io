@@ -630,6 +630,8 @@ body {
 
 .blog-card {
     position: relative;
+    display: flex;
+    flex-direction: column;
 }
 
 .blog-card-link {
@@ -640,13 +642,16 @@ body {
 }
 
 .blog-read-more-wrapper {
-    margin-top: 16px;
+    margin-top: auto;
+    padding-top: 16px;
+    display: flex;
+    justify-content: flex-end;
     position: relative;
     z-index: 2;
 }
 
 .blog-read-more {
-    color: var(--accent-color);
+    color: var(--color-blue);
     font-size: 14px;
     font-weight: 500;
     display: inline-flex;
